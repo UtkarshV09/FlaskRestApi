@@ -13,8 +13,11 @@ def home() -> str:
 # Define route for '/armstrong' URL and specify that it only responds to POST requests
 @app.route('/armstrong', methods=['POST'])
 def armstrong() -> Response:
-    # Get 'number' from the POST request's form data and convert it to an integer
-    n: int = int(request.form.get('number'))
+    try:
+        # Get 'number' from the POST request's form data and convert it to an integer
+        n: int = int(request.form.get('number'))
+    except ValueError:
+        return jsonify({"error": "Invalid input. Please provide a number."}), 400
 
     # Initial calculation setup for Armstrong number
     sum: int = 0
@@ -33,13 +36,13 @@ def armstrong() -> Response:
         result = {
             "number": copy_n,
             "armstrong": True,
-            "ip": "127.0.0.1/5000"
+            "ip": request.remote_addr
         }
     else:
         result = {
             "number": copy_n,
             "armstrong": False,
-            "ip": "127.0.0.1/5000"
+            "ip": request.remote_addr
         }
 
     # Return the result as a JSON response
